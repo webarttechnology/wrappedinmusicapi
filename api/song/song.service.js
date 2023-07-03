@@ -1,7 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../../config/database");
 
-
 module.exports = sequelize.define("Song", {
   id: {
     allowNull: false,
@@ -21,13 +20,18 @@ module.exports = sequelize.define("Song", {
     type: Sequelize.INTEGER(11),
     allowNull: false,
   },
-  artist_name: {
-    type: Sequelize.INTEGER(11),
+  description: {
+    type: Sequelize.TEXT(),
     allowNull: false,
   },
   music_file: {
     type: Sequelize.STRING(255),
     allowNull: false,
+  },
+  is_active: {
+    type: Sequelize.ENUM("0", "1"),
+    allowNull: false,
+    default: "1",
   },
   createdAt: {
     allowNull: false,

@@ -4,6 +4,7 @@ const {
   getsongs,
   deleteSongs,
   getSongsbyCategory,
+  getSongsbyID,
 } = require("./song.controller");
 const cors = require("cors");
 const router = require("express").Router();
@@ -26,7 +27,8 @@ function errHandeler(err, req, res, next) {
 
 router.post("/", upload.single("music_file"), errHandeler, createSongs);
 router.get("/", getsongs);
-router.get("/:id", getSongsbyCategory);
+router.get("/:id", getSongsbyID);
+router.get("/categorywise/:id", getSongsbyCategory);
 router.patch("/", updatesongs);
 router.delete("/:id", deleteSongs);
 

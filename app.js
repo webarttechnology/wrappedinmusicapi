@@ -11,6 +11,7 @@ const adminRoute = require("./api/admin/admin.route");
 const categoryRoute = require("./api/category/category.route");
 const subcategoryRoute = require("./api/subcategory/subcategory.route");
 const songs = require("./api/song/song.route");
+const script = require("./api/script/script.route");
 
 app.use(express.json());
 
@@ -39,7 +40,8 @@ app.use("/api/users", userRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/subcategory", subcategoryRoute);
-app.use("/api/songs",songs);
+app.use("/api/songs", songs);
+app.use("/api/script", script);
 
 const server = require("http").createServer(app);
 

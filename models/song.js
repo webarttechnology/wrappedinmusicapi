@@ -13,13 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Song.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Song',
-  });
+  Song.init(
+    {
+      name: DataTypes.STRING,
+      category_id: DataTypes.INTEGER,
+      subcategory_id: DataTypes.INTEGER,
+      description: DataType.TEXT,
+      music_file: DataTypes.STRING,
+      is_active: DataTypes.ENUM("0", "1"),
+    },
+    {
+      sequelize,
+      modelName: "Song",
+    }
+  );
   return Song;
 };

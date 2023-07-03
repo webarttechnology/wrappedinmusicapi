@@ -21,13 +21,20 @@ module.exports = {
         type: Sequelize.INTEGER(11),
         allowNull: false,
       },
-      artist_name: {
-        type: Sequelize.INTEGER(11),
+
+      description: {
+        type: Sequelize.TEXT,
         allowNull: false,
       },
+
       music_file: {
         type: Sequelize.STRING(255),
         allowNull: false,
+      },
+      is_active: {
+        type: Sequelize.ENUM("0", "1"),
+        allowNull: false,
+        default: "1",
       },
       createdAt: {
         allowNull: false,
@@ -39,7 +46,8 @@ module.exports = {
       },
     });
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Songs');
-  }
+    await queryInterface.dropTable("Songs");
+  },
 };
