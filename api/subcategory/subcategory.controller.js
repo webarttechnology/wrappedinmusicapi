@@ -1,9 +1,10 @@
 const subcategory = require("./subcategory.service");
 const Song = require("./../song/song.service");
 
+//const upload = require("./../../uploads/subcategory");
+
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-
 
 Song.belongsTo(subcategory, { foreignKey: "subcategory_id" });
 subcategory.hasMany(Song, { foreignKey: "subcategory_id" });
@@ -30,7 +31,7 @@ const createsubcat = async (req, res) => {
     });
 
     if (duplicateCheck === null) {
-      let filePath = "../../uploads/subcategory";
+      let filePath = "./../../uploads/subcategory";
       var imagename = Date.now() + ".png";
       const imagepath = filePath + "/" + Date.now() + ".png";
       let buffer = Buffer.from(body.image.split(",")[1], "base64");
@@ -154,7 +155,7 @@ const updateSubcategory = async (req, res) => {
     //   msg: duplicateCheck,
     // });
     if (body.image) {
-      let filePath = "./../../uploads/subcategory";
+      let filePath = "./../uploads/subcategory";
       var imagename = Date.now() + ".png";
       const imagepath = filePath + "/" + Date.now() + ".png";
       let buffer = Buffer.from(body.image.split(",")[1], "base64");
@@ -254,30 +255,29 @@ const categoryWiseShow = async (req, res) => {
 
 const searchbyCategoryWise = async (req, res) => {
   const body = req.body;
- // try {
-    const categorywiseShow = await subcategory.findAll({
-      where: {
-         name: { [Op.like]: "%" + body.search_term + "%" },
-        category_id: body.category_id,
-      },
+  // try {
+  const categorywiseShow = await subcategory.findAll({
+    where: {
+      name: { [Op.like]: "%" + body.search_term + "%" },
+      category_id: body.category_id,
+    },
+  });
+  // return res.status(200).json({
+  //   success: 1,
+  //   data: categorywiseShow,
+  // });
+  if (categorywiseShow === null) {
+    return res.status(200).json({
+      success: 0,
+      msg: "Data not found",
     });
-    // return res.status(200).json({
-    //   success: 1,
-    //   data: categorywiseShow,
-    // });
-    if (categorywiseShow === null){
-         return res.status(200).json({
-           success: 0,
-           msg: "Data not found",
-         });
-    }else{
-       return res.status(200).json({
-         success: 1,
-         data: categorywiseShow,
-       });
-      
-    }
-     
+  } else {
+    return res.status(200).json({
+      success: 1,
+      data: categorywiseShow,
+    });
+  }
+
   // } catch (e) {
   //   return res.status(409).json({
   //     success: 0,

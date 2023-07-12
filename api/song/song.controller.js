@@ -51,6 +51,7 @@ const createSongs = async (req, res) => {
       name: body.name,
       description: body.description,
       duration: body.duration,
+      amount:body.amount,
       music_file: body.music_file,
       is_active: "1",
     });
@@ -107,7 +108,7 @@ const updatesongs = async (req, res) => {
 const getsongs = async (req, res) => {
  try {
  const songData = await Song.findAll({
-   attributes: ["id", "name", "duration", "music_file", "description"],
+   attributes: ["id", "name", "duration","amount", "music_file", "description"],
    include: [
      {
        model: Songcategory,
@@ -128,6 +129,8 @@ const getsongs = async (req, res) => {
      },
    ],
  });
+
+ 
 
  if (songData !== null){
         return res.status(200).json({

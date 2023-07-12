@@ -22,6 +22,11 @@ module.exports = {
         allowNull: false,
       },
 
+      amount: {
+        type: Sequelize.DOUBLE(8,2),
+        allowNull: false,
+      },
+
       music_file: {
         type: Sequelize.STRING(255),
         allowNull: false,

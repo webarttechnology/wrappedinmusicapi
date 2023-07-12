@@ -2,9 +2,13 @@ const subcategory = require("./../../subcategory/subcategory.service");
 const Song = require("./../../song/song.service");
 const Category = require("./../../category/category.service");
 const Songcategory = require("./../../song/songcategory.service");
+const Order = require("./../../frontend/order/order.service");
 
 subcategory.belongsTo(Category, { foreignKey: "category_id" });
 Category.hasMany(subcategory, { foreignKey: "category_id" });
+
+Order.belongsTo(Song, { foreignKey: "song_id" });
+Song.hasMany(Order, { foreignKey: "song_id" });
 
 // Song.belongsTo(Songcategory, { foreignKey: "song_id" });
 // Songcategory.hasMany(Song, { foreignKey: "song_id" });
@@ -43,8 +47,23 @@ const subcatGetbyId = async (req, res) => {
           include: [
             {
               model: Song,
-              attributes: ["name", "music_file", "description", "is_active"],
+              attributes: [
+                "id",
+                "name",
+                "music_file",
+                "description",
+                "duration",
+                "amount",
+                "is_active",
+              ],
               required: true,
+              include: [
+                {
+                  model: Order,
+                  attributes: ["song_id", "registration_id"],
+                  required: false,
+                },
+              ],
             },
             {
               model: Category,
@@ -58,10 +77,18 @@ const subcatGetbyId = async (req, res) => {
             },
           ],
         });
+
          const musicArray = [];
          song.map((item, key) => {
            musicArray.push(item.Song);
          });
+
+           const subcategoryArray = [];
+           song.map((item, key) => {
+             subcategoryArray.push(item.subcategory);
+           });
+
+
 
          return res.status(200).json({
            success: 1,
@@ -72,6 +99,7 @@ const subcatGetbyId = async (req, res) => {
              details: song[0].subcategory.details,
              image: song[0].subcategory.image,
              music: musicArray,
+             subcategory_list:subcategoryArray,
              is_active: song[0].subcategory.is_active,
            },
          });
