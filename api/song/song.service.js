@@ -12,16 +12,13 @@ module.exports = sequelize.define("Song", {
     type: Sequelize.STRING(255),
     allowNull: false,
   },
-  category_id: {
-    type: Sequelize.INTEGER(11),
-    allowNull: false,
-  },
-  subcategory_id: {
-    type: Sequelize.INTEGER(11),
-    allowNull: false,
-  },
+
   description: {
     type: Sequelize.TEXT(),
+    allowNull: false,
+  },
+  duration: {
+    type: Sequelize.STRING(255),
     allowNull: false,
   },
   music_file: {

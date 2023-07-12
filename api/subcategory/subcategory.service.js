@@ -1,5 +1,11 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../../config/database");
+const Op = Sequelize.Op;
+const operatorsAliases = {
+  $like: Op.like,
+  $not: Op.not,
+};
+
 
 module.exports = sequelize.define("subcategory", {
   id: {

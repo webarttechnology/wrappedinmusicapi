@@ -21,6 +21,22 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true,
       },
+      zipcode: {
+        type: Sequelize.INTEGER(6),
+        allowNull: true,
+      },
+      city: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      state: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      country: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
       password: {
         type: Sequelize.STRING(255),
         allowNull: false,

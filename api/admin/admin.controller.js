@@ -30,7 +30,7 @@ const login = async (req, res) => {
            const salt = genSaltSync(10);
            // const jsontoken = hashSync(body.password, salt);
            const jsontoken = sign({ result: getemailId }, "qwe1234", {
-             expiresIn: "1h",
+             expiresIn: "4h",
            });
            return res.json({
              success: 1,

@@ -5,6 +5,7 @@ const {
   updateSubcategory,
   deleteSubcategory,
   subcatGetbyId,
+  searchbyCategoryWise,
 } = require("./subcategory.controller");
 const cors = require("cors");
 const router = require("express").Router();
@@ -37,10 +38,11 @@ function errHandeler(err, req, res, next) {
 
 const { checkToken } = require("./../../auth/token_validation");
 
-router.post("/", upload.single("image"), errHandeler, createsubcat);
-router.get("/", getSubcategory);
-router.get("/:id", subcatGetbyId);
-router.patch("/", updateSubcategory);
-router.delete("/:id", deleteSubcategory);
-router.get("/categorywise/:id", categoryWiseShow);
+router.post("/",checkToken, upload.single("image"), errHandeler, createsubcat);
+router.get("/",checkToken, getSubcategory);
+router.get("/:id",checkToken, subcatGetbyId);
+router.patch("/",checkToken, updateSubcategory);
+router.delete("/:id",checkToken, deleteSubcategory);
+router.get("/categorywise/:id", checkToken,categoryWiseShow);
+router.post("/categorywise-search", checkToken, searchbyCategoryWise);
 module.exports = router;

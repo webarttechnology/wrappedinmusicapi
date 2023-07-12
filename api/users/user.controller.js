@@ -296,8 +296,8 @@ const fs = require("fs");
         }else{
             const passwordCheck = compareSync(body.password, getemailId.password);
             if (passwordCheck) {
-              const jsontoken = sign({ result: getemailId }, "qwe1234", {
-                expiresIn: "4h",
+              const jsontoken = sign({ result: getemailId }, "fqwe1234", {
+                expiresIn: "12h",
               });
               return res.json({
                 success: 1,
@@ -471,6 +471,105 @@ const fs = require("fs");
       
   };
 
+  const profileEdit = async (req,res) =>{
+     const body = req.body;
+    try {
+       const userUpdate = await user.update(
+         {
+           name: body.name,
+           city: body.city,
+           state: body.state,
+           country: body.country,
+         },
+         { where: { id: body.id } }
+       );
+       if(userUpdate){
+        return res.status(200).json({
+          success: 1,
+          msg: "Data has been updated",
+        });
+       }else{
+        return res.status(200).json({
+          success: 0,
+          msg: "Some error,please try again",
+        });
+       }
+
+    } catch (e) {
+      return res.status(409).json({
+        success: 0,
+        msg: "some error",
+      });
+    }
+  }
+
+  const passwordChange = async(req,res) =>{
+     const body = req.body;
+    try {
+        
+         const salt = genSaltSync(10);
+         body.password = hashSync(body.password, salt);
+        
+           const passwordreset = await user.update(
+             { password: body.password },
+             { where: { id: body.id } }
+           );
+           if (passwordreset) {
+             return res.status(200).json({
+               success: 1,
+               msg: "Password changed successfully",
+             });
+           } else {
+             return res.status(500).json({
+               success: 0,
+               msg: "Error!! Please try again",
+             });
+           }
+        
+    } catch (e) {
+      return res.status(409).json({
+        success: 0,
+        msg: "some error",
+      });
+    }
+  }
+
+  const getUserbyId = async(req,res) =>{
+        try {
+             const showById = await user.findOne({
+               where: { id: req.params.id },
+             });
+
+             if(showById !== null){
+                  //  return res.status(200).json({
+                  //    success: 1,
+                  //    data: showById,
+                  //  });
+                    return res.status(200).json({
+                      success: 1,
+                      data: {
+                        name: showById.name,
+                        email: showById.email,
+                        city: showById.city,
+                        state: showById.state,
+                        country: showById.country,
+                      },
+                    });
+             }else{
+                return res.status(200).json({
+                  success: 0,
+                  msg: "Data not found",
+                });
+             }
+
+        } catch (e) {
+          return res.status(409).json({
+            success: 0,
+            msg: "some error",
+          });
+        }
+  }
+
 
 
 module.exports = {
@@ -480,4 +579,7 @@ module.exports = {
   login: login,
   forgotpassword: forgotpassword,
   resetpassword: resetpassword,
+  profileEdit: profileEdit,
+  passwordChange: passwordChange,
+  getUserbyId: getUserbyId,
 };
