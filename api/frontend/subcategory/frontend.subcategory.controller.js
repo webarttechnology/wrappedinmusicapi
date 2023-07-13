@@ -32,108 +32,114 @@ const path = require("path");
 
 const subcatGetbyId = async (req, res) => {
   try {
-
-
     const checkSubcat = await Songcategory.findOne({
       where: { subcategory_id: req.params.id },
     });
-
-   
-
-    if(checkSubcat !== null){
-        const song = await Songcategory.findAll({
-          where: { subcategory_id: req.params.id },
-          attributes: ["id"],
-          include: [
-            {
-              model: Song,
-              attributes: [
-                "id",
-                "name",
-                "music_file",
-                "description",
-                "duration",
-                "amount",
-                "is_active",
-              ],
-              required: true,
-              include: [
-                {
-                  model: Order,
-                  attributes: ["song_id", "registration_id"],
-                  required: false,
-                },
-              ],
-            },
-            {
-              model: Category,
-              attributes: ["name"],
-              required: true,
-            },
-            {
-              model: subcategory,
-              attributes: ["name", "category_id", "name", "details", "image"],
-              required: true,
-            },
-          ],
-        });
-
-         const musicArray = [];
-         song.map((item, key) => {
-           musicArray.push(item.Song);
-         });
-
-           const subcategoryArray = [];
-           song.map((item, key) => {
-             subcategoryArray.push(item.subcategory);
-           });
-
-
-
-         return res.status(200).json({
-           success: 1,
-           data: {
-             id: song[0].subcategory.id,
-             category_id: song[0].category.name,
-             name: song[0].subcategory.name,
-             details: song[0].subcategory.details,
-             image: song[0].subcategory.image,
-             music: musicArray,
-             subcategory_list:subcategoryArray,
-             is_active: song[0].subcategory.is_active,
-           },
-         });
-    }else{
-          const Subcat = await subcategory.findOne({
-            where: { id: req.params.id },
+    // check song avalible or not 
+    if (checkSubcat !== null) {
+      const song = await Songcategory.findAll({
+        where: { subcategory_id: req.params.id },
+        attributes: ["id"],
+        include: [
+          {
+            model: Song,
+            attributes: [
+              "id",
+              "name",
+              "music_file",
+              "description",
+              "duration",
+              "amount",
+              "is_active",
+            ],
+            required: true,
             include: [
               {
-                model: Category,
+                model: Order,
+                attributes: ["song_id", "registration_id"],
+                required: false,
+              },
+            ],
+          },
+          {
+            model: subcategory,
+            attributes: ["name", "category_id", "name", "details", "image"],
+            required: true,
+          },
+          {
+            model: Category,
+            attributes: ["name"],
+            required: true,
+          },
+        ],
+      });
+      const musicArray = [];
+      const songsId = [];
+      song.map((item, key) => {
+        musicArray.push(item.Song);
+        songsId.push(item.Song.id);
+      });
+
+      const getMultiplecat = await Song.findAll({
+        where: { id: songsId },
+        attributes: [["id", "song_id"]],
+        include: [
+          {
+            model: Songcategory,
+            attributes: ["id"],
+            required: true,
+            include: [
+              {
+                model: subcategory,
                 attributes: ["name"],
                 required: true,
               },
             ],
-          });
-          //  return res.status(200).json({
-          //    success: 0,
-          //    msg: Subcat.category.name,
-          //  });
-           const musicArray = [];
-           return res.status(200).json({
-             success: 1,
-             data: {
-               id: Subcat.id,
-               category_id: Subcat.category.name,
-               name: Subcat.name,
-               details: Subcat.details,
-               image: Subcat.image,
-               music: musicArray,
-               is_active: Subcat.is_active,
-             },
-           });
+          },
+        ],
+      });
 
+      return res.status(200).json({
+        success: 1,
+        data: {
+          id: song[0].subcategory.id,
+          category_id: song[0].category.name,
+          name: song[0].subcategory.name,
+          details: song[0].subcategory.details,
+          image: song[0].subcategory.image,
+          music: musicArray,
+          subcategory_list:getMultiplecat,
+          is_active: song[0].subcategory.is_active,
+        },
+      });
+    } else {
+      const Subcat = await subcategory.findOne({
+        where: { id: req.params.id },
+        include: [
+          {
+            model: Category,
+            attributes: ["name"],
+            required: true,
+          },
+        ],
+      });
+
+
+      
+      const musicArray = [];
+      return res.status(200).json({
+        success: 1,
+        data: {
+          id: Subcat.id,
+          category_id: Subcat.category.name,
+          name: Subcat.name,
+          details: Subcat.details,
+          image: Subcat.image,
+          music: musicArray,
+          is_active: Subcat.is_active,
+        },
+      });
     }
- 
   } catch (e) {
     return res.status(409).json({
       success: 0,

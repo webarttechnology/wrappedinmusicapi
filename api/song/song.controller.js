@@ -30,62 +30,67 @@ const createSongs = async (req, res) => {
   try {
     const subcategory_id = body.subcategory_id;
 
-    //  body.subcategory_id = body.subcategory_id.split(",");
-
-    // const duplicateCheck = await Song.findOne({
-    //   where: {
-    //     name: body.name,
-    //   },
-    // });
-
-    // if(duplicateCheck === null){
-    let filePath = "../../uploads/songs";
-    var imagename = Date.now() + ".mp3";
-    const imagepath = filePath + "/" + Date.now() + ".mp3";
-    let buffer = Buffer.from(body.music_file.split(",")[1], "base64");
-    fs.writeFileSync(path.join(__dirname, imagepath), buffer);
-    body.music_file = "uploads/songs/" + imagename;
-
-
-    var songs = await Song.create({
-      name: body.name,
-      description: body.description,
-      duration: body.duration,
-      amount:body.amount,
-      music_file: body.music_file,
-      is_active: "1",
+    const songDuplicateCheck = await Song.findOne({
+        where : {name : body.name}
     });
 
-    var musicArray = [];
+    if(songDuplicateCheck === null){
+      //  body.subcategory_id = body.subcategory_id.split(",");
 
-    subcategory_id.map((item, key) => {
-      var songsModel = {
-        song_id: songs.id,
-        category_id: body.category_id,
-        subcategory_id: item,
-      };
-      musicArray.push(songsModel);
-    });
+      // const duplicateCheck = await Song.findOne({
+      //   where: {
+      //     name: body.name,
+      //   },
+      // });
 
-    var songscat = Songcategory.bulkCreate(musicArray);
-    if (songscat) {
-      return res.status(200).json({
-        success: 1,
-        msg: "Data has been added successfully.",
-        data: songs,
+      // if(duplicateCheck === null){
+      let filePath = "../../uploads/songs";
+      var imagename = Date.now() + ".mp3";
+      const imagepath = filePath + "/" + Date.now() + ".mp3";
+      let buffer = Buffer.from(body.music_file.split(",")[1], "base64");
+      fs.writeFileSync(path.join(__dirname, imagepath), buffer);
+      body.music_file = "uploads/songs/" + imagename;
+
+      var songs = await Song.create({
+        name: body.name,
+        description: body.description,
+        duration: body.duration,
+        amount: body.amount,
+        music_file: body.music_file,
+        is_active: "1",
       });
-    } else {
-      return res.status(200).json({
-        success: 0,
-        msg: "Insert error. Please try again",
+
+      var musicArray = [];
+
+      subcategory_id.map((item, key) => {
+        var songsModel = {
+          song_id: songs.id,
+          category_id: body.category_id,
+          subcategory_id: item,
+        };
+        musicArray.push(songsModel);
       });
+
+      var songscat = Songcategory.bulkCreate(musicArray);
+      if (songscat) {
+        return res.status(200).json({
+          success: 1,
+          msg: "Data has been added successfully.",
+          data: songs,
+        });
+      } else {
+        return res.status(200).json({
+          success: 0,
+          msg: "Insert error. Please try again",
+        });
+      }
+    
+    }else{
+       return res.status(200).json({
+         success: 0,
+         msg: "Already exists song name",
+       });
     }
-    // }else{
-    //    return res.status(200).json({
-    //      success: 0,
-    //      msg: "Already exists this songs",
-    //    });
-    // }
   } catch (e) {
     return res.status(409).json({
       success: 0,
