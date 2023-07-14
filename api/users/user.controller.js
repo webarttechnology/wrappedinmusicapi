@@ -477,9 +477,13 @@ const fs = require("fs");
        const userUpdate = await user.update(
          {
            name: body.name,
+           phone:body.phone,
            city: body.city,
            state: body.state,
-           country: body.country,
+           country: "USA",
+           zipcode: body.zipcode,
+           address: body.address,
+           address1: body.address1,
          },
          { where: { id: body.id } }
        );
@@ -550,6 +554,9 @@ const fs = require("fs");
                       data: {
                         name: showById.name,
                         email: showById.email,
+                        phone: showById.phone,
+                        address: showById.address,
+                        address2:showById.address1,
                         city: showById.city,
                         state: showById.state,
                         country: showById.country,

@@ -13,6 +13,7 @@ const categoryRoute = require("./api/category/category.route");
 const subcategoryRoute = require("./api/subcategory/subcategory.route");
 const songs = require("./api/song/song.route");
 const guide = require("./api/guide/guide.route");
+const order = require("./api/admin/order/backend.order.route");
 
 //frontend Api
 
@@ -20,6 +21,7 @@ const frontendCategoryRoute = require("./api/frontend/category/frontend.category
 const frontendSubcategoryRoute = require("./api/frontend/subcategory/frontend.subcategory.route");
 const frontendGuideRoute = require("./api/frontend/guide/frontend.guide.route");
 const orderRoute = require("./api/frontend/order/order.route");
+const frontendsongRoute = require("./api/frontend/songs/frontend.song.route");
 
 app.use(express.json());
 
@@ -54,12 +56,14 @@ app.use("/api/category", categoryRoute);
 app.use("/api/subcategory", subcategoryRoute);
 app.use("/api/songs", songs);
 app.use("/api/guide", guide);
+app.use("/api/order", order);
 
 //Frontend APi
 app.use("/api/frontend/category", frontendCategoryRoute);
 app.use("/api/frontend/subcategory", frontendSubcategoryRoute);
 app.use("/api/frontend/guide", frontendGuideRoute);
 app.use("/api/frontend/order", orderRoute);
+app.use("/api/frontend/song", frontendsongRoute);
 
 const server = require("http").createServer(app);
 

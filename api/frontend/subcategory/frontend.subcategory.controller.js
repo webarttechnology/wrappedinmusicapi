@@ -22,10 +22,7 @@ subcategory.hasMany(Songcategory, { foreignKey: "subcategory_id" });
 Songcategory.belongsTo(Category, { foreignKey: "category_id" });
 Category.hasMany(Songcategory, { foreignKey: "category_id" });
 
-const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-const { sign } = require("jsonwebtoken");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");

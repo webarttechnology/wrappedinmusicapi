@@ -29,6 +29,10 @@ module.exports = sequelize.define("Song", {
     type: Sequelize.STRING(255),
     allowNull: false,
   },
+  image: {
+    type: Sequelize.STRING(255),
+    allowNull: false,
+  },
   is_active: {
     type: Sequelize.ENUM("0", "1"),
     allowNull: false,

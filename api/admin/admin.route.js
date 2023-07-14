@@ -4,7 +4,6 @@ const {
   usrdelete,
   userStatusChange,
 } = require("./admin.controller");
-const cors = require("cors");
 const router = require("express").Router();
 
 const { checkToken } = require("./../../auth/token_validation");

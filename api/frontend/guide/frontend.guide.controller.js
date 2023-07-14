@@ -1,9 +1,5 @@
 const Script = require("./../../guide/guide.service");
 
-const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-const { sign } = require("jsonwebtoken");
-const crypto = require("crypto");
-const Joi = require("joi");
 
 
 const getAllScript = async (req,res) =>{

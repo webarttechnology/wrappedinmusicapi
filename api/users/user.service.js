@@ -37,6 +37,14 @@ module.exports = sequelize.define("registrations", {
     type: Sequelize.STRING(255),
     allowNull: true,
   },
+  address: {
+    type: Sequelize.TEXT(255),
+    allowNull: true,
+  },
+  address1: {
+    type: Sequelize.TEXT(255),
+    allowNull: true,
+  },
   password: {
     type: Sequelize.STRING(255),
     allowNull: false,
