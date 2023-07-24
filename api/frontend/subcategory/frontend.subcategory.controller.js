@@ -32,6 +32,7 @@ const subcatGetbyId = async (req, res) => {
     const checkSubcat = await Songcategory.findOne({
       where: { subcategory_id: req.params.id },
     });
+  
     // check song avalible or not 
     if (checkSubcat !== null) {
       const song = await Songcategory.findAll({
@@ -42,8 +43,9 @@ const subcatGetbyId = async (req, res) => {
             model: Song,
             attributes: [
               "id",
-              "name",
-              "music_file",
+              ["name", "title"],
+              ["music_file", "url"],
+              ["image", "artwork"],
               "description",
               "duration",
               "amount",
@@ -53,19 +55,28 @@ const subcatGetbyId = async (req, res) => {
           },
           {
             model: subcategory,
-            attributes: ["name", "category_id", "name", "details", "image"],
+            attributes: [
+              "id",
+              "name",
+              "category_id",
+              "name",
+              "details",
+              "image",
+            ],
             required: true,
           },
           {
             model: Category,
-            attributes: ["id","name"],
+            attributes: ["id", "name"],
             required: true,
           },
         ],
       });
+
       const musicArray = [];
       const songsId = [];
       song.map((item, key) => {
+        item.Song.id.toString();
         musicArray.push(item.Song);
         songsId.push(item.Song.id);
       });
@@ -81,7 +92,7 @@ const subcatGetbyId = async (req, res) => {
             include: [
               {
                 model: subcategory,
-                attributes: ["name","id"],
+                attributes: ["name", "id"],
                 required: true,
               },
             ],
@@ -122,10 +133,10 @@ const subcatGetbyId = async (req, res) => {
           id: Subcat.id,
           category_name: Subcat.category.name,
           category_id: Subcat.category.id,
-          name: Subcat.name,
+          title: Subcat.name,
           details: Subcat.details,
-          image: Subcat.image,
-          music: musicArray,
+          artwork: Subcat.image,
+          url: musicArray,
           is_active: Subcat.is_active,
         },
       });

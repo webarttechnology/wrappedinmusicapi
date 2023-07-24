@@ -7,7 +7,6 @@ const {
   subcatGetbyId,
   searchbyCategoryWise,
 } = require("./subcategory.controller");
-const cors = require("cors");
 const router = require("express").Router();
 const multer = require("multer");
 const path = require("path");

@@ -65,7 +65,7 @@ const createsubcat = async (req, res) => {
       });
     }
   } catch (e) {
-    return res.status(200).json({
+    return res.status(409).json({
       success: 0,
       msg: e,
     });

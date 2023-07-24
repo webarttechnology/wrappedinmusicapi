@@ -5,16 +5,15 @@ const Guidecategory  = require("./../../guide/guidecategory.service");
 
 const getAllScript = async (req,res) =>{
      try {
-         const song = await Guidecategory.findAll({
-           where: { category_id: req.params.id },
+         const song = await Guide.findAll({
+           attributes: ["id", "name", "description"],
            include: [
              {
-               model: Guide,
-               attributes: [
-                 "name",
-                 "description",
-               ],
+               model: Guidecategory,
+               attributes: ["id"],
                required: true,
+               group:"script_id",
+               where: { category_id: req.params.id },
              },
            ],
          });
