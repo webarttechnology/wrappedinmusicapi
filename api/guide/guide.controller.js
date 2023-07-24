@@ -2,6 +2,7 @@ const Script = require('./guide.service');
 const Guidecategory = require('./guidecategory.service');
 const Category = require('./../category/category.service');
 const Subcategory = require("./../subcategory/subcategory.service");
+const Guideamt = require('./guideamt.service');
 
 
 Subcategory.belongsTo(Category, { foreignKey: "category_id" });
@@ -31,8 +32,7 @@ const createScript = async (req,res) => {
            },
          });
 
-         if (duplicateCheck === null) {
-
+        if (duplicateCheck === null) {
            const subcategory_id = body.subcategory_id;
 
            const songs = await Script.create({
@@ -52,8 +52,6 @@ const createScript = async (req,res) => {
                guideArray.push(songsModel);
              });
 
-            
-
              var songscat = Guidecategory.bulkCreate(guideArray); 
            if (songscat) {
              return res.status(200).json({
@@ -67,12 +65,12 @@ const createScript = async (req,res) => {
                msg: "Insert error. Please try again",
              });
            }
-         } else {
+        }else {
            return res.status(200).json({
              success: 0,
              msg: "Already exists this script",
            });
-         }
+        }
      } catch (e) {
        return res.status(409).json({
          success: 0,
@@ -154,7 +152,7 @@ const getAllScript = async (req,res) =>{
 
 const categoryWiseScript = async (req,res) => {
     try {
-         const getallScript = await Script.findAndCountAll({
+         const getallScript = await Guidecategory.findAndCountAll({
            where: { category_id: req.params.id },
          });
         
@@ -220,6 +218,57 @@ const deleteScript = async (req, res) => {
   }
 };
 
+const presetScriptAmountUpdate = async (req, res) => {
+  const body = req.body;
+  try {
+     var subcategoryUpdate = await Guideamt.update(
+       { amount : body.amount },
+       { where: { id: body.id } }
+     );
+
+     if(subcategoryUpdate){
+       return res.status(200).json({
+         success: 1,
+         msg: "Update successfully",
+       });
+     }else{
+        return res.status(200).json({
+          success: 0,
+          msg: "Some error. Please try again",
+        });
+     }
+
+  } catch (e) {
+    return res.status(409).json({
+      success: 0,
+      msg: e,
+    });
+  }
+};
+
+const getAllPresetScriptAmt = async (req, res) => {
+    return res.status(200).json({
+      success: 1,
+      data: "asas",
+    });
+       try {
+        const getAllData = await Guideamt.findAll({
+          attributes: ["id", "amount"],
+        });
+       
+            return res.status(200).json({
+              success: 1,
+              data: getAllData,
+            });
+      
+      } catch (e) {
+        return res.status(409).json({
+          success: 0,
+          msg: e,
+        });
+      }
+};
+
 
 
 module.exports = {
@@ -229,4 +278,6 @@ module.exports = {
   categoryWiseScript: categoryWiseScript,
   updateScript: updateScript,
   deleteScript: deleteScript,
+  presetScriptAmountUpdate: presetScriptAmountUpdate,
+  getAllPresetScriptAmt: getAllPresetScriptAmt,
 };

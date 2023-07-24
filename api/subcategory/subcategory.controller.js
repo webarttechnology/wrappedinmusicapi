@@ -125,14 +125,6 @@ const getSubcategory = async (req, res) => {
 
 const updateSubcategory = async (req, res) => {
   const body = req.body;
-  // return res.status(200).json({
-  //   success: 1,
-  //   msg: {
-  //     name: body.name,
-  //     category_id: body.category_id,
-  //     id :body.id
-  //   },
-  // });
   try {
     //  const duplicateCheck = await subcategory.count({
     //    where: {
@@ -150,11 +142,7 @@ const updateSubcategory = async (req, res) => {
     //    ],
     //  });
 
-    // return res.status(200).json({
-    //   success: 1,
-    //   msg: duplicateCheck,
-    // });
-    if (body.image) {
+    if(body.image) {
       let filePath = "./../uploads/subcategory";
       var imagename = Date.now() + ".png";
       const imagepath = filePath + "/" + Date.now() + ".png";
@@ -171,7 +159,7 @@ const updateSubcategory = async (req, res) => {
         },
         { where: { id: body.id } }
       );
-    } else {
+    }else {
       var subcategoryUpdate = await subcategory.update(
         {
           category_id: body.category_id,
@@ -193,7 +181,7 @@ const updateSubcategory = async (req, res) => {
         msg: "Some error. Please try again",
       });
     }
-  } catch (e) {
+  } catch (e) { 
     return res.status(409).json({
       success: 0,
       msg: e,

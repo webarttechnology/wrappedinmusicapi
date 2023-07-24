@@ -1,10 +1,23 @@
-const Script = require("./../../guide/guide.service");
+const Guide = require("./../../guide/guide.service");
+const Guidecategory  = require("./../../guide/guidecategory.service");
 
 
 
 const getAllScript = async (req,res) =>{
      try {
-         const song = await Script.findAll({});
+         const song = await Guidecategory.findAll({
+           where: { category_id: req.params.id },
+           include: [
+             {
+               model: Guide,
+               attributes: [
+                 "name",
+                 "description",
+               ],
+               required: true,
+             },
+           ],
+         });
          if(song !== null){
              return res.status(200).json({
                success: 1,

@@ -4,6 +4,6 @@ const router = require("express").Router();
 
 const { usercheckToken } = require("../../../auth/token_validation");
 
-router.get("/", usercheckToken, getAllScript);
+router.get("/:id", usercheckToken, getAllScript);
 
 module.exports = router;

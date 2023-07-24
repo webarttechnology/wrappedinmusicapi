@@ -45,8 +45,12 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true,
       },
+      fulfillment_status: {
+        type: Sequelize.ENUM("1", "0"),
+        allowNull: true,
+      },
       status: {
-        type: Sequelize.ENUM('1','0'),
+        type: Sequelize.ENUM("1", "0"),
         allowNull: true,
       },
       createdAt: {

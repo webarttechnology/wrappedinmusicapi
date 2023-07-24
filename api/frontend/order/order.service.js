@@ -37,6 +37,10 @@ module.exports = sequelize.define("Order", {
     type: Sequelize.STRING(255),
     allowNull: true,
   },
+  fulfillment_status: {
+    type: Sequelize.ENUM("1", "0"),
+    allowNull: true,
+  },
   status: {
     type: Sequelize.ENUM("1", "0"),
     allowNull: true,

@@ -22,6 +22,7 @@ const frontendSubcategoryRoute = require("./api/frontend/subcategory/frontend.su
 const frontendGuideRoute = require("./api/frontend/guide/frontend.guide.route");
 const orderRoute = require("./api/frontend/order/order.route");
 const frontendsongRoute = require("./api/frontend/songs/frontend.song.route");
+const paypalRoute = require("./api/frontend/paypal/paypal.route");
 
 app.use(express.json());
 
@@ -64,6 +65,7 @@ app.use("/api/frontend/subcategory", frontendSubcategoryRoute);
 app.use("/api/frontend/guide", frontendGuideRoute);
 app.use("/api/frontend/order", orderRoute);
 app.use("/api/frontend/song", frontendsongRoute);
+app.use("/api/frontend/payment", paypalRoute);
 
 const server = require("http").createServer(app);
 

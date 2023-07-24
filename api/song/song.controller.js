@@ -19,7 +19,7 @@ const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 
-const createSongs = async (req, res) => {
+const createSongs = async (req, res) => {  
   const body = req.body;
 
   try {
@@ -31,7 +31,7 @@ const createSongs = async (req, res) => {
 
     if (songDuplicateCheck === null) {
       //  body.subcategory_id = body.subcategory_id.split(",");
-      //mp3 songs uploas
+      //mp3 songs uploads
       let filePath = "./../../uploads/songs";
       var songname = Date.now() + ".mp3";
       const songpath = filePath + "/" + Date.now() + ".mp3";
@@ -44,7 +44,7 @@ const createSongs = async (req, res) => {
       const imagepath = ifilePath + "/" + Date.now() + ".png";
       let buffer = Buffer.from(body.image.split(",")[1], "base64");
       fs.writeFileSync(path.join(__dirname, imagepath), buffer);
-      body.image = "uploads/songs/image" + imagename;
+      body.image = "uploads/songs/image/" + imagename;
 
       //insert in song table
       var songs = await Song.create({
@@ -86,7 +86,7 @@ const createSongs = async (req, res) => {
         msg: "Already exists song name",
       });
     }
-  } catch (e) {
+  }catch (e) {
     return res.status(409).json({
       success: 0,
       msg: e,
@@ -97,6 +97,96 @@ const createSongs = async (req, res) => {
 const updatesongs = async (req, res) => {
   const body = req.body;
   try {
+       const subcategory_id = body.subcategory_id;
+
+       const songDuplicateCheck = await Song.findOne({
+         where: { name: body.name, id: { $not: body.id } },
+       });
+
+       if (songDuplicateCheck === null) {
+         //mp3 songs uploads
+         if(body.music_file){
+
+             let filePath = "./../../uploads/songs";
+             var songname = Date.now() + ".mp3";
+             const songpath = filePath + "/" + Date.now() + ".mp3";
+             let sbuffer = Buffer.from(body.music_file.split(",")[1], "base64");
+             fs.writeFileSync(path.join(__dirname, songpath), sbuffer);
+             body.music_file = "uploads/songs/" + songname;
+              var songs = await Song.update(
+                {
+                  name: body.name,
+                  description: body.description,
+                  duration: body.duration,
+                  amount: body.amount,
+                  music_file: body.music_file,
+                  // image: body.image,
+                  is_active: "1",
+                },
+                { where: { id: body.id } }
+              );
+         }
+        
+         //songs thum upload
+         if(body.image){
+             let ifilePath = "./../../uploads/songs/image";
+             var imagename = Date.now() + ".png";
+             const imagepath = ifilePath + "/" + Date.now() + ".png";
+             let buffer = Buffer.from(body.image.split(",")[1], "base64");
+             fs.writeFileSync(path.join(__dirname, imagepath), buffer);
+             body.image = "uploads/songs/image/" + imagename;
+               var songs = await Song.update(
+                 {
+                   name: body.name,
+                   description: body.description,
+                   duration: body.duration,
+                   amount: body.amount,
+                  // music_file: body.music_file,
+                    image: body.image,
+                   is_active: "1",
+                 },
+                 { where: { id: body.id } }
+               );
+         }
+
+         if(songs){
+            // var musicArray = [];
+            // subcategory_id.map((item, key) => {
+            //   var songsModel = {
+            //     song_id: songs.id,
+            //     category_id: body.category_id,
+            //     subcategory_id: item,
+            //   };
+            //   musicArray.push(songsModel);
+            // });
+          //  var songscat = Songcategory.bulkCreate(musicArray);
+          //   if(songscat){
+          //      return res.status(200).json({
+          //        success: 1,
+          //        msg: "Data has been updated",
+          //      });
+          //   }else{
+          //      return res.status(200).json({
+          //        success: 0,
+          //        msg: "Some error. Please try again ",
+          //      });
+          //  }
+           return res.status(200).json({
+                 success: 1,
+                 msg: "Data has been updated",
+               });
+         }else{
+           return res.status(200).json({
+                 success: 0,
+                 msg: "Some error. Please try again ",
+               });
+         }
+       } else {
+         return res.status(200).json({
+           success: 0,
+           msg: "Already exists song name",
+         });
+       }
   } catch (e) {
     return res.status(409).json({
       success: 0,
@@ -104,6 +194,8 @@ const updatesongs = async (req, res) => {
     });
   }
 };
+
+
 
 const getsongs = async (req, res) => {
   try {

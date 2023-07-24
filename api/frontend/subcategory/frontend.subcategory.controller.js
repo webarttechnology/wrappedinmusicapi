@@ -50,13 +50,6 @@ const subcatGetbyId = async (req, res) => {
               "is_active",
             ],
             required: true,
-            include: [
-              {
-                model: Order,
-                attributes: ["song_id", "registration_id"],
-                required: false,
-              },
-            ],
           },
           {
             model: subcategory,
@@ -65,7 +58,7 @@ const subcatGetbyId = async (req, res) => {
           },
           {
             model: Category,
-            attributes: ["name"],
+            attributes: ["id","name"],
             required: true,
           },
         ],
@@ -88,7 +81,7 @@ const subcatGetbyId = async (req, res) => {
             include: [
               {
                 model: subcategory,
-                attributes: ["name"],
+                attributes: ["name","id"],
                 required: true,
               },
             ],
@@ -100,12 +93,13 @@ const subcatGetbyId = async (req, res) => {
         success: 1,
         data: {
           id: song[0].subcategory.id,
-          category_id: song[0].category.name,
+          category_name: song[0].category.name,
+          category_id: song[0].category.id,
           name: song[0].subcategory.name,
           details: song[0].subcategory.details,
           image: song[0].subcategory.image,
           music: musicArray,
-          subcategory_list:getMultiplecat,
+          subcategory_list: getMultiplecat,
           is_active: song[0].subcategory.is_active,
         },
       });
@@ -115,20 +109,19 @@ const subcatGetbyId = async (req, res) => {
         include: [
           {
             model: Category,
-            attributes: ["name"],
+            attributes: ["name","id"],
             required: true,
           },
         ],
       });
-
-
-      
+  
       const musicArray = [];
       return res.status(200).json({
         success: 1,
         data: {
           id: Subcat.id,
-          category_id: Subcat.category.name,
+          category_name: Subcat.category.name,
+          category_id: Subcat.category.id,
           name: Subcat.name,
           details: Subcat.details,
           image: Subcat.image,

@@ -13,7 +13,14 @@ const getAllOrder = async (req, res) =>{
      try {
           if(req.params.id === "2"){
                  var orderList = await Order.findAll({
-                   attributes: ["id", "order_no", "amount", "status"],
+                   where: { status: "1" },
+                   attributes: [
+                     "id",
+                     "order_no",
+                     "amount",
+                     "status",
+                     "fulfillment_status",
+                   ],
                    include: [
                      {
                        model: Song,
@@ -29,8 +36,17 @@ const getAllOrder = async (req, res) =>{
                  });
           }else{
                 var orderList = await Order.findAll({
-                  where: { status: req.params.id },
-                  attributes: ["id", "order_no", "amount", "status"],
+                  where: {
+                    status: "1",
+                    fulfillment_status: req.params.id,
+                  },
+                  attributes: [
+                    "id",
+                    "order_no",
+                    "amount",
+                    "status",
+                    "fulfillment_status",
+                  ],
                   include: [
                     {
                       model: Song,
