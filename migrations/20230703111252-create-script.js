@@ -19,6 +19,11 @@ module.exports = {
         allowNull: false,
       },
 
+      amount: {
+        type: Sequelize.DOUBLE(8, 2),
+        allowNull: false,
+      },
+
       is_active: {
         type: Sequelize.ENUM("0", "1"),
         allowNull: false,

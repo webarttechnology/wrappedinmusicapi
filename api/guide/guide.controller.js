@@ -2,7 +2,7 @@ const Script = require('./guide.service');
 const Guidecategory = require('./guidecategory.service');
 const Category = require('./../category/category.service');
 const Subcategory = require("./../subcategory/subcategory.service");
-const Guideamt = require('./guideamt.service');
+//const Guideamt = require('./guideamt.service');
 
 
 Subcategory.belongsTo(Category, { foreignKey: "category_id" });
@@ -33,24 +33,47 @@ const createScript = async (req,res) => {
          });
 
         if (duplicateCheck === null) {
-           const subcategory_id = body.subcategory_id;
+               const mood = body.mood;
+               const occasion = body.occasion;
+               const genre = body.genre;
 
            const songs = await Script.create({
              name: body.name,
              description: body.description,
+             amount:body.amount,
              is_active: "1",
            });
-
+           
              var guideArray = [];
 
-             subcategory_id.map((item, key) => {
-               var songsModel = {
+             mood.map((item, key) => {
+               var moodScript = {
                  script_id: songs.id,
-                 category_id: body.category_id,
+                 category_id: 3,
                  subcategory_id: item,
                };
-               guideArray.push(songsModel);
+               guideArray.push(moodScript);
              });
+
+              occasion.map((item, key) => {
+                var occasionScript = {
+                  script_id: songs.id,
+                  category_id: 2,
+                  subcategory_id: item,
+                };
+                  guideArray.push(occasionScript);
+              });
+
+               genre.map((item, key) => {
+                 var genereScript = {
+                   script_id: songs.id,
+                   category_id: 1,
+                   subcategory_id: item,
+                 };
+                 guideArray.push(genereScript);
+               });
+
+                 
 
              var songscat = Guidecategory.bulkCreate(guideArray); 
            if (songscat) {
@@ -83,6 +106,25 @@ const getbyIdScript = async (req,res) => {
     try {
          const getallScript = await Script.findOne({
            where: { id: req.params.id },
+           include: [
+             {
+               model: Guidecategory,
+               attributes: ["id"],
+               required: true,
+               include: [
+                 {
+                   model: Subcategory,
+                   required: true,
+                   attributes: ["name", "id"],
+                 },
+                 {
+                   model: Category,
+                   required: true,
+                   attributes: ["name"],
+                 },
+               ],
+             },
+           ],
          });
 
          if (getallScript !== null) {
@@ -109,7 +151,7 @@ const getbyIdScript = async (req,res) => {
 const getAllScript = async (req,res) =>{
     try {
          const getallScript = await Script.findAll({
-           attributes: ["id", "name", "description", "is_active"],
+           attributes: ["id", "name", "description", "amount", "is_active"],
            include: [
              {
                model: Guidecategory,
@@ -119,7 +161,7 @@ const getAllScript = async (req,res) =>{
                  {
                    model: Subcategory,
                    required: true,
-                   attributes: ["name"],
+                   attributes: ["name","id"],
                  },
                  {
                    model: Category,
@@ -218,56 +260,52 @@ const deleteScript = async (req, res) => {
   }
 };
 
-const presetScriptAmountUpdate = async (req, res) => {
-  const body = req.body;
-  try {
-     var subcategoryUpdate = await Guideamt.update(
-       { amount : body.amount },
-       { where: { id: body.id } }
-     );
+// const presetScriptAmountUpdate = async (req, res) => {
+//   const body = req.body;
+//   try {
+//      var subcategoryUpdate = await Guideamt.update(
+//        { amount : body.amount },
+//        { where: { id: body.id } }
+//      );
 
-     if(subcategoryUpdate){
-       return res.status(200).json({
-         success: 1,
-         msg: "Update successfully",
-       });
-     }else{
-        return res.status(200).json({
-          success: 0,
-          msg: "Some error. Please try again",
-        });
-     }
+//      if(subcategoryUpdate){
+//        return res.status(200).json({
+//          success: 1,
+//          msg: "Update successfully",
+//        });
+//      }else{
+//         return res.status(200).json({
+//           success: 0,
+//           msg: "Some error. Please try again",
+//         });
+//      }
 
-  } catch (e) {
-    return res.status(409).json({
-      success: 0,
-      msg: e,
-    });
-  }
-};
+//   } catch (e) {
+//     return res.status(409).json({
+//       success: 0,
+//       msg: e,
+//     });
+//   }
+// };
 
-const getAllPresetScriptAmt = async (req, res) => {
-    return res.status(200).json({
-      success: 1,
-      data: "asas",
-    });
-       try {
-        const getAllData = await Guideamt.findAll({
-          attributes: ["id", "amount"],
-        });
+// const getAllPresetScriptAmt = async (req, res) => {
+//        try {
+//         const getAllData = await Guideamt.findAll({
+//           attributes: ["id", "amount"],
+//         });
        
-            return res.status(200).json({
-              success: 1,
-              data: getAllData,
-            });
+//             return res.status(200).json({
+//               success: 1,
+//               data: getAllData,
+//             });
       
-      } catch (e) {
-        return res.status(409).json({
-          success: 0,
-          msg: e,
-        });
-      }
-};
+//       } catch (e) {
+//         return res.status(409).json({
+//           success: 0,
+//           msg: e,
+//         });
+//       }
+// };
 
 
 
@@ -278,6 +316,6 @@ module.exports = {
   categoryWiseScript: categoryWiseScript,
   updateScript: updateScript,
   deleteScript: deleteScript,
-  presetScriptAmountUpdate: presetScriptAmountUpdate,
-  getAllPresetScriptAmt: getAllPresetScriptAmt,
+  // presetScriptAmountUpdate: presetScriptAmountUpdate,
+  // getAllPresetScriptAmt: getAllPresetScriptAmt,
 };

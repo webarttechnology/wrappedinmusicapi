@@ -167,6 +167,7 @@ const updatesongs = async (req, res) => {
                  { where: { id: body.id } }
                );
          }
+         // Not complete update in songCategory table
          if(songs){
              var musicArray = [];
              subcategory_id.map((item, key) => {
@@ -176,7 +177,7 @@ const updatesongs = async (req, res) => {
                };
                musicArray.push(songsModel);
              });
-            var songscat = Songcategory.bulkUpdat(musicArray);
+            var songscat = Songcategory.bulkUpdate(musicArray);
              if(songscat){
                 return res.status(200).json({
                   success: 1,
@@ -207,47 +208,42 @@ const updatesongs = async (req, res) => {
 const getsongs = async (req, res) => {
   try {
     const songData = await Song.findAll({
-      attributes: [
-        "id",
-        "name",
-        "duration",
-        "amount",
-        "music_file",
-        "image",
-        "description",
-      ],
+      attributes: ["id"],
       include: [
         {
           model: Songcategory,
           attributes: ["id"],
           required: true,
-          include: [
-            {
-              model: Subcategory,
-              required: true,
-              attributes: ["name"],
-            },
-            {
-              model: Category,
-              required: true,
-              attributes: ["name"],
-            },
-          ],
+          include: {
+            model: Category,
+            attributes: ["id", "name"],
+            required: true,
+          },
         },
       ],
     });
 
-    if (songData !== null) {
-      return res.status(200).json({
-        success: 1,
-        data: songData,
-      });
-    } else {
-      return res.status(200).json({
-        success: 1,
-        msg: "Data not found",
-      });
-    }
+    const dataArray = [];
+
+    // songData.map((d, index) => {
+    //   d.categ
+    // })
+
+
+  return res.status(200).json({
+    success: 1,
+    data: songData,
+  });
+  return false;
+
+  
+
+ 
+
+
+  
+
+ 
   } catch (e) {
     return res.status(409).json({
       success: 0,

@@ -5,8 +5,8 @@ const {
   categoryWiseScript,
   updateScript,
   deleteScript,
-  presetScriptAmountUpdate,
-  getAllPresetScriptAmt,
+  // presetScriptAmountUpdate,
+  // getAllPresetScriptAmt,
 } = require("./guide.controller");
 const cors = require("cors");
 const router = require("express").Router();
@@ -22,7 +22,7 @@ router.get("/:id",checkToken, getbyIdScript);
 router.get("/categorywise/:id",checkToken, categoryWiseScript);
 router.patch("/",checkToken, deleteScript);
 router.delete("/:id", checkToken, deleteScript);
-router.patch("/preset-script-amt", checkToken, presetScriptAmountUpdate);
-router.get("/preset-script-amt", checkToken, getAllPresetScriptAmt);
+// router.patch("/preset-script-amt", checkToken, presetScriptAmountUpdate);
+// router.get("/preset-script-amt", checkToken, getAllPresetScriptAmt);
 
 module.exports = router;
