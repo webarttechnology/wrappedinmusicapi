@@ -206,50 +206,47 @@ const updatesongs = async (req, res) => {
 
 
 const getsongs = async (req, res) => {
-  try {
-    const songData = await Song.findAll({
-      attributes: ["id"],
-      include: [
-        {
-          model: Songcategory,
-          attributes: ["id"],
-          required: true,
-          include: {
-            model: Category,
-            attributes: ["id", "name"],
-            required: true,
-          },
-        },
-      ],
-    });
+ // try {
+    const category = await Category.findAll({
+      attributes: ['name', 'id']
+    })
 
-    const dataArray = [];
+    const songArray = [];
+    category.map(async (cat, index) => {
+       const song = await Song.findAll({
+         attributes: ["name", "id"],
+         include: [
+           {
+             model: Songcategory,
+             attributes: ["id"],
+             where: {category_id: cat.id},
+             required: true,
+           },
+         ],
+       });
 
-    // songData.map((d, index) => {
-    //   d.categ
-    // })
-
-
-  return res.status(200).json({
-    success: 1,
-    data: songData,
-  });
-  return false;
-
-  
+       if (cat.id in songArray) {
+        songArray.push(song);
+       } else {
+         songArray[cat.id] = {
+           song: song,
+         };
+       }
+    })
 
  
 
-
-  
-
+     return res.status(200).json({
+       success: 1,
+       data: songArray,
+     });
  
-  } catch (e) {
-    return res.status(409).json({
-      success: 0,
-      msg: e,
-    });
-  }
+  // } catch (e) {
+  //   return res.status(409).json({
+  //     success: 0,
+  //     msg: e,
+  //   });
+  // }
 };
 
 const getSongsbyCategory = async (req, res) => {
