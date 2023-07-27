@@ -206,107 +206,68 @@ const updatesongs = async (req, res) => {
 
 
 const getsongs = async (req, res) => {
-  // try {
-    
-      const allsongs = await Song.findAll({
-        where: { is_active: "1" },
-        attributes: [
-          "name",
-          "id",
-          "description",
-          "duration",
-          "amount",
-          "music_file",
-          "image",
-        ],
-        // include: [
-        //   {
-        //     model: Songcategory,
-        //     attributes: ["id"],
-        //     // where: { category_id: req.params.id },
-        //     required: true,
-        //     include: [
-        //       {
-        //         model: Subcategory,
-        //         attributes: ["name", "id"],
-        //         required: true,
-        //       },
-        //     ],
-        //   },
-        // ],
-      })
-        .then(async (result) => {
-          var musicArray = [];
+ // try {
+    const allsongs = await Song.findAll({
+      attributes: ["name", "id"],
+      include: [
+        {
+          model: Songcategory,
+          attributes: ["id",],
+          required: true,
+          include: [
+            {
+              model: Category,
+              attributes: ["name"],
+              required: true,
+            },
+            {
+              model: Subcategory,
+              attributes: ["name"],
+              required: true,
+            },
+          ],
+        },
+      ],
+    });
 
-          const dataResult = result.map(async (item, index) => {
-            var genereSong = await Songcategory.findAll({
-              where: { song_id: item.id, category_id: 1 },
-              attributes: ["id"],
-              include: [
-                {
-                  model: Subcategory,
-                  attributes: ["name", "id"],
-                  required: true,
-                },
-              ],
-            });
+    const category = await Category.findAll({
+      attributes: ["name", "id"],
+    });
 
-            var occationSong = await Songcategory.findAll({
-              where: { song_id: item.id, category_id: 2 },
-              attributes: ["id"],
-              include: [
-                {
-                  model: Subcategory,
-                  attributes: ["name", "id"],
-                  required: true,
-                },
-              ],
-            });
 
-            var moodSong = await Songcategory.findAll({
-              where: { song_id: item.id, category_id: 3 },
-              attributes: ["id"],
-              include: [
-                {
-                  model: Subcategory,
-                  attributes: ["name", "id"],
-                  required: true,
-                },
-              ],
-            });
+    var songArray = [];
+    category.map(async (cat, index) => {
+       var song = await Song.findAll({
+         attributes: ["name", "id"],
+         include: [
+           {
+             model: Songcategory,
+             attributes: ["id","category_id"],
+             where: {category_id: cat.id},
+             required: true,
+           },
+         ],
+       });
+       songArray.push(allsongs);
+     //  console.log(song);
+     
 
-            var OccasionSongs = {
-              id: item.id,
-              name: item.name,
-              description: item.description,
-              duration: item.duration,
-              amount: item.amount,
-              music_file: item.music_file,
-              image: item.image,
-              genere: genereSong,
-              occation: occationSong,
-              mood: moodSong,
-            };
+      //  if (cat.id in songArray.Songcategories.category_id) {
+      //    songArray.push(song);
+      //  } 
+      //  else {
+      //    songArray[cat.id] = {
+      //      song: song,
+      //    };
+      //  }
+    });
 
-            musicArray.push(OccasionSongs);
-          });
+      return res.status(200).json({
+        success: 0,
+        msg: allsongs,
+      });
 
-          await Promise.all(dataResult);
-          console.log(musicArray);
-
-          if (musicArray.length !== 0) {
-            return res.status(200).json({
-              success: 1,
-              data: musicArray,
-            });
-          } else {
-            return res.status(200).json({
-              success: 0,
-              msg: "Data not found",
-            });
-          }
-        })
-        .catch(console.log("error"));    
+   
 
   // } catch (e) {
   //   return res.status(409).json({
@@ -315,8 +276,6 @@ const getsongs = async (req, res) => {
   //   });
   // }
 };
-
-
 
 const getSongsbyCategory = async (req, res) => {
   try {
@@ -400,22 +359,23 @@ const getSongsbyID = async (req, res) => {
 
 const deleteSongs = async (req, res) => {
   try {
-      // const catSongDeleted = await Songcategory.destroy({
-      //   where: {
-      //     song_id: req.params.id,
-      //   },
-      // });
+    const catSongDeleted = await Songcategory.destroy({
+      where: {
+        song_id: req.params.id,
+      },
+    });
 
-   //  if (catSongDeleted === 1) {
-        const rowsDeleted = await Song.update(
-          {is_active : "0"},
-          { where: {id: req.params.id}, }
-          );
+    // if (catSongDeleted === 1) {
+    const rowsDeleted = await Song.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
 
-        return res.status(200).json({
-          success: 1,
-          msg: "Songs has been deleted",
-        });
+    return res.status(200).json({
+      success: 1,
+      msg: "Songs has been deleted",
+    });
     //  } else {
     //    return res.status(200).json({
     //      success: 0,
@@ -423,10 +383,10 @@ const deleteSongs = async (req, res) => {
     //    });
     //  }
   } catch (e) {
-      return res.status(409).json({
-        success: 0,
-        msg: e,
-      });
+    return res.status(409).json({
+      success: 0,
+      msg: e,
+    });
   }
 };
 

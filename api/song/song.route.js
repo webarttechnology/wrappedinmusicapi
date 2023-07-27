@@ -27,7 +27,7 @@ const { checkToken } = require("./../../auth/token_validation");
 
 router.post("/",checkToken, upload.single("music_file"), errHandeler, createSongs);
 router.get("/", checkToken, getsongs);
-router.get("/:id",checkToken, getSongsbyID);
+//router.get("/:id",checkToken, getSongsbyID);
 router.get("/categorywise/:id",checkToken, getSongsbyCategory);
 router.patch("/",checkToken, updatesongs);
 router.delete("/:id",checkToken, deleteSongs);

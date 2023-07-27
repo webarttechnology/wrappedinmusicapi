@@ -132,14 +132,6 @@ const updateSubcategory = async (req, res) => {
     //      category_id: body.category_id,
     //       id: { $not: body.id },
     //    },
-    //    attributes: [
-    //      "id",
-    //      "name",
-    //      "category_id",
-    //      "details",
-    //      "image",
-    //      "is_active",
-    //    ],
     //  });
 
     if(body.image) {
